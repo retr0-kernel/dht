@@ -30,8 +30,8 @@ type Session struct {
 	UserID       int64      `json:"user_id"`
 	SessionToken string     `json:"session_token"`
 	RefreshToken *string    `json:"refresh_token,omitempty"`
-	IPAddress    *string    `json:"ip_address,omitempty"`
-	UserAgent    *string    `json:"user_agent,omitempty"`
+	IPAddress    string     `json:"ip_address,omitempty"`
+	UserAgent    string     `json:"user_agent,omitempty"`
 	IsActive     bool       `json:"is_active"`
 	ExpiresAt    time.Time  `json:"expires_at"`
 	CreatedAt    time.Time  `json:"created_at"`
@@ -177,19 +177,39 @@ func (s *UserService) CreateSession(ctx context.Context, userID int64, ipAddress
 		return nil, fmt.Errorf("failed to generate refresh token: %w", err)
 	}
 
+	// Handle empty IP address
+	var ipAddr interface{}
+	if ipAddress != "" {
+		ipAddr = ipAddress
+	} else {
+		ipAddr = nil
+	}
+
+	// Handle empty user agent
+	var ua interface{}
+	if userAgent != "" {
+		ua = userAgent
+	} else {
+		ua = nil
+	}
+
 	// Insert session
 	query := `
 		INSERT INTO sessions (user_id, session_token, refresh_token, ip_address, user_agent, is_active, expires_at)
 		VALUES ($1, $2, $3, $4, $5, true, NOW() + INTERVAL '7 days')
-		RETURNING id, user_id, session_token, refresh_token, ip_address, user_agent, is_active, expires_at, created_at, updated_at
+		RETURNING id, user_id, session_token, refresh_token, 
+		          COALESCE(HOST(ip_address)::text, '') as ip_address, 
+		          COALESCE(user_agent, '') as user_agent, 
+		          is_active, expires_at, created_at, updated_at
 	`
 
 	var session Session
-	err = s.db.QueryRow(ctx, query, userID, sessionToken, refreshToken, ipAddress, userAgent).Scan(
+	var refreshTokenStr string
+	err = s.db.QueryRow(ctx, query, userID, sessionToken, refreshToken, ipAddr, ua).Scan(
 		&session.ID,
 		&session.UserID,
 		&session.SessionToken,
-		&session.RefreshToken,
+		&refreshTokenStr,
 		&session.IPAddress,
 		&session.UserAgent,
 		&session.IsActive,
@@ -201,6 +221,8 @@ func (s *UserService) CreateSession(ctx context.Context, userID int64, ipAddress
 	if err != nil {
 		return nil, fmt.Errorf("failed to create session: %w", err)
 	}
+
+	session.RefreshToken = &refreshTokenStr
 
 	return &session, nil
 }

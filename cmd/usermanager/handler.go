@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -278,15 +279,26 @@ func getIPAddress(r *http.Request) string {
 	if forwarded != "" {
 		// Take the first IP if multiple are present
 		ips := strings.Split(forwarded, ",")
-		return strings.TrimSpace(ips[0])
+		ip := strings.TrimSpace(ips[0])
+		return cleanIPAddress(ip)
 	}
 
 	// Check X-Real-IP header
 	realIP := r.Header.Get("X-Real-IP")
 	if realIP != "" {
-		return realIP
+		return cleanIPAddress(realIP)
 	}
 
-	// Fall back to RemoteAddr
-	return r.RemoteAddr
+	// Fall back to RemoteAddr (strip port)
+	return cleanIPAddress(r.RemoteAddr)
+}
+
+// cleanIPAddress removes port from IP address
+func cleanIPAddress(addr string) string {
+	host, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		// No port present, return as-is
+		return addr
+	}
+	return host
 }

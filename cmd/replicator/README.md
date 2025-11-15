@@ -11,12 +11,12 @@ The Replicator handles:
 - **Metrics**: Track replication performance and failures
 
 ## Architecture
-![Replicator Architecture](./images/replicator-architecture.png)
+![Replicator Architecture](../../images/replicator-architecture.png)
 
 ## Consistency Models
 
 ### Eventual Consistency
-![Eventual Consistency Sequence Diagram](./images/eventual-consistency-sequence-diagram.png)
+![Eventual Consistency Sequence Diagram](../../images/eventual-consistency-sequence-diagram.png)
 
 **Characteristics:**
 - Primary acknowledges immediately
@@ -26,7 +26,7 @@ The Replicator handles:
 - **Use case:** High-throughput, non-critical data
 
 ### Strong Consistency
-![Strong Consistency Sequence Diagram](./images/strong-consistency-sequence-diagram.png)
+![Strong Consistency Sequence Diagram](../../images/strong-consistency-sequence-diagram.png)
 
 **Characteristics:**
 - Wait for majority of replicas to acknowledge

@@ -13,6 +13,7 @@ type Config struct {
 	UserManagerPort string
 	GatewayPort     string
 	DHTNodePort     string
+	ReplicatorPort  string
 }
 
 func LoadConfig() *Config {
@@ -23,6 +24,7 @@ func LoadConfig() *Config {
 		UserManagerPort: getEnv("USERMANAGER_PORT", "8081"),
 		GatewayPort:     getEnv("GATEWAY_PORT", "8080"),
 		DHTNodePort:     getEnv("DHTNODE_PORT", "8082"),
+		ReplicatorPort:  getEnv("REPLICATOR_PORT", "8085"),
 	}
 }
 

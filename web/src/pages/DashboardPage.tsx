@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,11 +18,7 @@ export function DashboardPage() {
         activeKeys: 0,
     });
 
-    useEffect(() => {
-        loadStats();
-    }, []);
-
-    const loadStats = async () => {
+    const loadStats = useCallback(async () => {
         try {
             const [keysResponse, usageStats] = await Promise.all([
                 apiKeyAPI.list(),
@@ -37,14 +33,18 @@ export function DashboardPage() {
             ]);
 
             setStats({
-                apiKeyCount: keysResponse.count,
-                totalRequests: usageStats.total_requests,
-                activeKeys: keysResponse.api_keys.filter(k => k.is_active).length,
+                apiKeyCount: keysResponse?.count || 0,
+                totalRequests: usageStats?.total_requests || 0,
+                activeKeys: keysResponse?.api_keys?.filter(k => k.is_active).length || 0,
             });
         } catch (error) {
             console.error('Failed to load stats:', error);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadStats();
+    }, [loadStats]);
 
     return (
         <Layout>

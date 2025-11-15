@@ -25,7 +25,7 @@ export function Layout({ children }: LayoutProps) {
                     <div className="flex items-center justify-between">
                         <Link to="/" className="flex items-center space-x-2">
                             <Database className="h-6 w-6" />
-                            <span className="text-xl font-bold">yourdht</span>
+                            <span className="text-xl font-bold">dht</span>
                         </Link>
 
                         <div className="flex items-center space-x-4">
@@ -49,7 +49,7 @@ export function Layout({ children }: LayoutProps) {
 
             <footer className="border-t mt-auto">
                 <div className="container mx-auto px-4 py-6 text-center text-sm text-muted-foreground">
-                    © {new Date().getFullYear()} yourdht. All rights reserved.
+                    © {new Date().getFullYear()} dht. All rights reserved.
                 </div>
             </footer>
         </div>

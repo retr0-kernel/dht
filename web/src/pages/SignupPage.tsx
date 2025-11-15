@@ -61,7 +61,7 @@ export function SignupPage() {
                     </div>
                     <CardTitle className="text-2xl text-center">Create an account</CardTitle>
                     <CardDescription className="text-center">
-                        Enter your details to get started with yourdht
+                        Enter your details to get started with dht
                     </CardDescription>
                 </CardHeader>
                 <form onSubmit={handleSubmit}>

@@ -1,12 +1,12 @@
-# yourdht - Distributed Key-Value Store SaaS
+# dht - Distributed Key-Value Store SaaS
 
 A production-ready distributed hash table (DHT) based key-value storage service built with Go, featuring multi-tenancy, replication, and configurable consistency levels.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 ![Architecture](./images/architecture.png)
 
 
-## ✨ Features
+## Features
 
 ### Core Features
 - **Distributed Storage**: Data distributed across multiple nodes using consistent hashing
@@ -148,7 +148,7 @@ curl -X DELETE "http://localhost:8080/v1/kv/user:123" \
   -H "X-API-Key: $API_KEY"
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### User Management Service (Port 8081)
 
@@ -236,7 +236,7 @@ Create a new API key (requires JWT token).
 }
 ```
 
-**⚠️ Note:** The full API key is only shown once during creation. Store it securely!
+**Note:** The full API key is only shown once during creation. Store it securely!
 
 ---
 
@@ -438,7 +438,7 @@ REPLICATOR_PORT="8085"
 NODE_ID="node-1"     # for DHT nodes
 ```
 
-## 🏛️ Architecture Deep Dive
+## Architecture Deep Dive
 
 ### Consistent Hashing
 ![Consistent Hashing](./images/consistent_hashing.png)
@@ -480,7 +480,7 @@ NODE_ID="node-1"     # for DHT nodes
 - Independent bucket per user ID
 - Refills at 1.67 tokens/second
 
-## 📊 Monitoring & Metrics
+## Monitoring & Metrics
 
 ### Key Metrics to Monitor
 
@@ -518,7 +518,7 @@ while true; do
 done
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Manual Testing
 ```bash
@@ -544,7 +544,7 @@ curl http://localhost:8083/store/test:1
 curl http://localhost:8084/store/test:1
 ```
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Service Won't Start
 
@@ -596,10 +596,10 @@ psql $DATABASE_URL -c "SELECT 1"
 - Ensure write permissions on `data/` directory
 - Check logs for WAL recovery messages on startup
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📧 Contact
+## Contact
 
 For questions or support, please open an issue on GitHub.

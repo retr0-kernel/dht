@@ -77,7 +77,7 @@ func main() {
 
 	// Start server
 	go func() {
-		log.Printf("🚀 DHT Node %s starting on port %s\n", nodeID, port)
+		log.Printf("DHT Node %s starting on port %s\n", nodeID, port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v\n", err)
 		}
@@ -88,7 +88,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("🛑 Shutting down server...")
+	log.Println("Shutting down server...")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -96,7 +96,7 @@ func main() {
 		log.Fatalf("Server forced to shutdown: %v\n", err)
 	}
 
-	log.Println("✅ Server exited gracefully")
+	log.Println("Server exited gracefully")
 }
 
 // handlePut handles PUT requests

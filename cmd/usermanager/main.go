@@ -32,7 +32,7 @@ func main() {
 	if err := dbPool.Ping(context.Background()); err != nil {
 		log.Fatalf("Unable to ping database: %v\n", err)
 	}
-	log.Println("✅ Database connection established")
+	log.Println("Database connection established")
 
 	// Initialize auth service
 	authService := auth.NewAuthService(cfg.JWTSecret, cfg.JWTExpiration)
@@ -69,7 +69,7 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("🚀 User Manager service starting on port %s\n", cfg.UserManagerPort)
+		log.Printf("User Manager service starting on port %s\n", cfg.UserManagerPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v\n", err)
 		}
@@ -80,7 +80,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("🛑 Shutting down server...")
+	log.Println("Shutting down server...")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -88,5 +88,5 @@ func main() {
 		log.Fatalf("Server forced to shutdown: %v\n", err)
 	}
 
-	log.Println("✅ Server exited gracefully")
+	log.Println("Server exited gracefully")
 }

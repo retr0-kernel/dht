@@ -27,7 +27,7 @@ func main() {
 	}
 
 	ring := hashring.NewHashRing(nodes)
-	log.Printf("✅ Hash ring initialized with %d nodes\n", len(nodes))
+	log.Printf("Hash ring initialized with %d nodes\n", len(nodes))
 
 	// Initialize rate limiter store
 	rateLimiterStore := NewRateLimiterStore()
@@ -64,7 +64,7 @@ func main() {
 
 	// Start server in goroutine
 	go func() {
-		log.Printf("🚀 Gateway service starting on port %s\n", cfg.GatewayPort)
+		log.Printf("Gateway service starting on port %s\n", cfg.GatewayPort)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("Server error: %v\n", err)
 		}
@@ -75,7 +75,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("🛑 Shutting down server...")
+	log.Println("Shutting down server...")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -83,5 +83,5 @@ func main() {
 		log.Fatalf("Server forced to shutdown: %v\n", err)
 	}
 
-	log.Println("✅ Server exited gracefully")
+	log.Println("Server exited gracefully")
 }

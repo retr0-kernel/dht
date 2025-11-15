@@ -53,6 +53,7 @@ func main() {
 	mux.HandleFunc("POST /apikeys", handler.CreateAPIKey)
 	mux.HandleFunc("GET /apikeys", handler.ListAPIKeys)
 	mux.HandleFunc("GET /health", handler.Health)
+	mux.HandleFunc("POST /validate-key", handler.ValidateAPIKey)
 
 	// Wrap with middleware
 	wrappedMux := LoggingMiddleware(CORSMiddleware(mux))

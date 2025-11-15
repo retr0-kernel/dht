@@ -218,6 +218,35 @@ func (h *Handler) ListAPIKeys(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// ValidateAPIKey validates an API key and returns user ID
+func (h *Handler) ValidateAPIKey(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		APIKey string `json:"api_key"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		respondError(w, http.StatusBadRequest, "Invalid request body")
+		return
+	}
+
+	if req.APIKey == "" {
+		respondError(w, http.StatusBadRequest, "API key is required")
+		return
+	}
+
+	// Verify API key
+	userID, err := h.apiKeyService.VerifyAPIKey(r.Context(), req.APIKey)
+	if err != nil {
+		respondError(w, http.StatusUnauthorized, "Invalid API key")
+		return
+	}
+
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"valid":   true,
+		"user_id": userID,
+	})
+}
+
 // Health check endpoint
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{

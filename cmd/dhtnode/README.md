@@ -16,7 +16,7 @@ Each DHT Node:
 ## Storage Engine
 
 ### In-Memory Store
-![In Memory Store](./images/inmemory-store.png)
+![In Memory Store](../../images/inmemory-store.png)
 
 **Features:**
 - Thread-safe with RWMutex
@@ -210,7 +210,7 @@ curl http://localhost:8082/health
 ## Write-Ahead Log Details
 
 ### Startup Recovery
-![WAL Recovery](./images/wal-recovery.png)
+![WAL Recovery](../../images/wal-recovery.png)
 
 **Features:**
 - Skips expired entries during recovery

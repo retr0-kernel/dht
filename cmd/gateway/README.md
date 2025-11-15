@@ -12,7 +12,7 @@ The Gateway handles:
 - **Consistency Management**: Supports both strong and eventual consistency
 
 ## Architecture
-![Gateway Architecture](./images/gateway-architecture.png)
+![Gateway Architecture](../../images/gateway-architecture.png)
 
 ## Configuration
 
@@ -31,7 +31,7 @@ go run cmd/gateway/*.go
 ## Request Flow
 
 ### Write Operation (PUT)
-![Gateway Put Flow](./images/gateway-put-flow.png)
+![Gateway Put Flow](../../images/gateway-put-flow.png)
 
 ### Read Operation (GET)
 
@@ -117,7 +117,7 @@ curl http://localhost:8080/health
 ## Rate Limiting
 
 ### Token Bucket Algorithm
-![Token Bucket](./images/token-bucket.png)
+![Token Bucket](../../images/token-bucket.png)
 
 **Configuration:**
 - Max tokens: 10 (burst capacity)

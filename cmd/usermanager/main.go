@@ -44,7 +44,7 @@ func main() {
 	apiKeyService := models.NewAPIKeyService(dbPool)
 
 	// Initialize handlers
-	handler := NewHandler(userService, apiKeyService, authService)
+	handler := NewHandler(userService, apiKeyService, authService, dbPool)
 
 	// Setup router
 	mux := http.NewServeMux()
@@ -54,6 +54,8 @@ func main() {
 	mux.HandleFunc("GET /apikeys", handler.ListAPIKeys)
 	mux.HandleFunc("GET /health", handler.Health)
 	mux.HandleFunc("POST /validate-key", handler.ValidateAPIKey)
+	mux.HandleFunc("GET /usage", handler.ListUsageRecords)
+	mux.HandleFunc("GET /usage/stats", handler.GetUsageStats)
 
 	// Wrap with middleware
 	wrappedMux := LoggingMiddleware(CORSMiddleware(mux))

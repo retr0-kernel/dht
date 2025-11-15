@@ -1,28 +1,33 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"dht/internal/auth"
 	"dht/internal/models"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Handler struct {
 	userService   *models.UserService
 	apiKeyService *models.APIKeyService
 	authService   *auth.AuthService
+	db            *pgxpool.Pool
 }
 
-func NewHandler(userService *models.UserService, apiKeyService *models.APIKeyService, authService *auth.AuthService) *Handler {
+func NewHandler(userService *models.UserService, apiKeyService *models.APIKeyService, authService *auth.AuthService, db *pgxpool.Pool) *Handler {
 	return &Handler{
 		userService:   userService,
 		apiKeyService: apiKeyService,
 		authService:   authService,
+		db:            db,
 	}
 }
 
@@ -284,6 +289,159 @@ func (h *Handler) extractUserIDFromToken(r *http.Request) (int64, error) {
 	}
 
 	return userID, nil
+}
+
+// ListUsageRecords lists usage records for authenticated user
+func (h *Handler) ListUsageRecords(w http.ResponseWriter, r *http.Request) {
+	userID, err := h.extractUserIDFromToken(r)
+	if err != nil {
+		respondError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	limit := 100
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if l, err := strconv.Atoi(limitStr); err == nil {
+			limit = l
+		}
+	}
+
+	query := `
+		SELECT id, user_id, api_key_id, operation, key_accessed, 
+		       request_size_bytes, response_size_bytes, status_code, 
+		       duration_ms, ip_address, user_agent, error_message, created_at
+		FROM usage_records
+		WHERE user_id = $1
+		ORDER BY created_at DESC
+		LIMIT $2
+	`
+
+	rows, err := h.db.Query(context.Background(), query, userID, limit)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "Failed to fetch usage records")
+		return
+	}
+	defer rows.Close()
+
+	var records []map[string]interface{}
+	for rows.Next() {
+		var record struct {
+			ID                int64
+			UserID            int64
+			APIKeyID          *int64
+			Operation         string
+			KeyAccessed       *string
+			RequestSizeBytes  int64
+			ResponseSizeBytes int64
+			StatusCode        int
+			DurationMs        int
+			IPAddress         *string
+			UserAgent         *string
+			ErrorMessage      *string
+			CreatedAt         time.Time
+		}
+
+		err := rows.Scan(
+			&record.ID, &record.UserID, &record.APIKeyID, &record.Operation,
+			&record.KeyAccessed, &record.RequestSizeBytes, &record.ResponseSizeBytes,
+			&record.StatusCode, &record.DurationMs, &record.IPAddress,
+			&record.UserAgent, &record.ErrorMessage, &record.CreatedAt,
+		)
+		if err != nil {
+			continue
+		}
+
+		records = append(records, map[string]interface{}{
+			"id":                  record.ID,
+			"user_id":             record.UserID,
+			"api_key_id":          record.APIKeyID,
+			"operation":           record.Operation,
+			"key_accessed":        record.KeyAccessed,
+			"request_size_bytes":  record.RequestSizeBytes,
+			"response_size_bytes": record.ResponseSizeBytes,
+			"status_code":         record.StatusCode,
+			"duration_ms":         record.DurationMs,
+			"ip_address":          record.IPAddress,
+			"user_agent":          record.UserAgent,
+			"error_message":       record.ErrorMessage,
+			"created_at":          record.CreatedAt,
+		})
+	}
+
+	respondJSON(w, http.StatusOK, records)
+}
+
+// GetUsageStats returns usage statistics for authenticated user
+func (h *Handler) GetUsageStats(w http.ResponseWriter, r *http.Request) {
+	userID, err := h.extractUserIDFromToken(r)
+	if err != nil {
+		respondError(w, http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+
+	query := `
+		SELECT 
+			COUNT(*) as total_requests,
+			COUNT(*) FILTER (WHERE status_code >= 200 AND status_code < 300) as successful_requests,
+			COUNT(*) FILTER (WHERE status_code >= 400) as failed_requests,
+			COALESCE(SUM(request_size_bytes + response_size_bytes), 0) as total_bytes_transferred,
+			COALESCE(AVG(duration_ms), 0) as average_latency_ms
+		FROM usage_records
+		WHERE user_id = $1
+	`
+
+	var stats struct {
+		TotalRequests         int64
+		SuccessfulRequests    int64
+		FailedRequests        int64
+		TotalBytesTransferred int64
+		AverageLatencyMs      float64
+	}
+
+	err = h.db.QueryRow(context.Background(), query, userID).Scan(
+		&stats.TotalRequests,
+		&stats.SuccessfulRequests,
+		&stats.FailedRequests,
+		&stats.TotalBytesTransferred,
+		&stats.AverageLatencyMs,
+	)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "Failed to fetch statistics")
+		return
+	}
+
+	// Get requests by operation
+	operationQuery := `
+		SELECT operation, COUNT(*) as count
+		FROM usage_records
+		WHERE user_id = $1
+		GROUP BY operation
+	`
+
+	rows, err := h.db.Query(context.Background(), operationQuery, userID)
+	if err != nil {
+		respondError(w, http.StatusInternalServerError, "Failed to fetch operation stats")
+		return
+	}
+	defer rows.Close()
+
+	requestsByOperation := make(map[string]int64)
+	for rows.Next() {
+		var operation string
+		var count int64
+		if err := rows.Scan(&operation, &count); err == nil {
+			requestsByOperation[operation] = count
+		}
+	}
+
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"total_requests":          stats.TotalRequests,
+		"successful_requests":     stats.SuccessfulRequests,
+		"failed_requests":         stats.FailedRequests,
+		"total_bytes_transferred": stats.TotalBytesTransferred,
+		"average_latency_ms":      stats.AverageLatencyMs,
+		"requests_by_operation":   requestsByOperation,
+	})
 }
 
 // Helper functions

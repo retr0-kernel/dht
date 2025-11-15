@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
@@ -31,21 +31,21 @@ export function APIKeysTab({ onUpdate }: APIKeysTabProps) {
     const [creating, setCreating] = useState(false);
     const [copiedKey, setCopiedKey] = useState(false);
 
-    useEffect(() => {
-        loadKeys();
-    }, []);
-
-    const loadKeys = async () => {
+    const loadKeys = useCallback(async () => {
         try {
             const response = await apiKeyAPI.list();
-            setKeys(response.api_keys);
+            setKeys(response?.api_keys || []);
             onUpdate?.();
         } catch (error) {
             console.error('Failed to load API keys:', error);
         } finally {
             setLoading(false);
         }
-    };
+    }, [onUpdate]);
+
+    useEffect(() => {
+        loadKeys();
+    }, [loadKeys]);
 
     const handleCreateKey = async () => {
         if (!newKeyName.trim()) return;

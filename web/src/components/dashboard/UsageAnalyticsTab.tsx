@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { usageAPI, type UsageRecord } from '../../lib/api';
@@ -11,20 +11,21 @@ export function UsageAnalyticsTab() {
     const [records, setRecords] = useState<UsageRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadUsageRecords();
-    }, []);
-
-    const loadUsageRecords = async () => {
+    const loadUsageRecords = useCallback(async () => {
         try {
             const data = await usageAPI.list({ limit: 100 });
-            setRecords(data);
+            setRecords(data || []);
         } catch (error) {
             console.error('Failed to load usage records:', error);
+            setRecords([]);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadUsageRecords();
+    }, [loadUsageRecords]);
 
     if (loading) {
         return (

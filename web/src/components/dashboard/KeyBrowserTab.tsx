@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
@@ -20,7 +20,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
-import { useEffect } from 'react';
 
 export function KeyBrowserTab() {
     const [selectedApiKey, setSelectedApiKey] = useState<string>('');
@@ -33,21 +32,24 @@ export function KeyBrowserTab() {
     const [newValue, setNewValue] = useState('');
     const [newTTL, setNewTTL] = useState('');
 
-    useEffect(() => {
-        loadApiKeys();
-    }, []);
-
-    const loadApiKeys = async () => {
+    const loadApiKeys = useCallback(async () => {
         try {
             const response = await apiKeyAPI.list();
-            setApiKeys(response.api_keys.filter(k => k.is_active));
-            if (response.api_keys.length > 0 && response.api_keys[0].key) {
-                setSelectedApiKey(response.api_keys[0].key);
+            const activeKeys = (response?.api_keys || [])
+                .filter(k => k.is_active && k.key); // Only include keys that have a valid key value
+            setApiKeys(activeKeys);
+            if (activeKeys.length > 0 && activeKeys[0].key) {
+                setSelectedApiKey(activeKeys[0].key);
             }
         } catch (error) {
             console.error('Failed to load API keys:', error);
+            setApiKeys([]);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadApiKeys();
+    }, [loadApiKeys]);
 
     const handleSearch = async () => {
         if (!searchKey.trim() || !selectedApiKey) return;
@@ -141,7 +143,7 @@ export function KeyBrowserTab() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {apiKeys.map((key) => (
-                                            <SelectItem key={key.id} value={key.key || ''}>
+                                            <SelectItem key={key.id} value={key.key!}>
                                                 {key.name} ({key.key_prefix}...)
                                             </SelectItem>
                                         ))}

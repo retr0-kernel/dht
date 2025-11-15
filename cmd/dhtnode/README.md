@@ -11,12 +11,12 @@ Each DHT Node:
 - **HTTP API**: Simple REST interface for CRUD operations
 
 ## Architecture
-./images/dhtnode-architecture.png
+![DHTNode Architecture](./images/dhtnode-architecture.png)
 
 ## Storage Engine
 
 ### In-Memory Store
-./images/inmemory-store.png
+![In Memory Store](./images/inmemory-store.png)
 
 **Features:**
 - Thread-safe with RWMutex
@@ -210,7 +210,7 @@ curl http://localhost:8082/health
 ## Write-Ahead Log Details
 
 ### Startup Recovery
-./images/wal-recovery.png
+![WAL Recovery](./images/wal-recovery.png)
 
 **Features:**
 - Skips expired entries during recovery

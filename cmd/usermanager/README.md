@@ -12,7 +12,7 @@ The User Manager provides:
 - **API Key Validation**: Validate API keys for other services
 
 ## Architecture
-./images/usermanager-architecture.png
+![User Manager Architecture](./images/usermanager-architecture.png)
 
 ## Database Schema
 
@@ -304,7 +304,7 @@ ydht_<44-character-base64-string>
 4. Check expiration and active status
 
 ## Authentication Flow
-./images/usermanager-auth-flow.png
+![Authentication Flow](./images/usermanager-auth-flow.png)
 
 ## Error Handling
 

@@ -11,7 +11,7 @@ Each DHT Node:
 - **HTTP API**: Simple REST interface for CRUD operations
 
 ## Architecture
-![DHTNode Architecture](.././images/dhtnode-architecture.png)
+![DHTNode Architecture](../images/dhtnode-architecture.png)
 
 ## Storage Engine
 

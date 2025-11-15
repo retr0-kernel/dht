@@ -3,7 +3,8 @@
 A production-ready distributed hash table (DHT) based key-value storage service built with Go, featuring multi-tenancy, replication, and configurable consistency levels.
 
 ## 🏗️ Architecture Overview
-./images/architecture.png
+![Architecture](./images/architecture.png)
+
 
 ## ✨ Features
 
@@ -17,7 +18,7 @@ A production-ready distributed hash table (DHT) based key-value storage service 
 - **Rate Limiting**: Token bucket algorithm (100 requests/minute with burst of 10)
 
 ### Consistency Levels
-./images/consistency.png
+![Consistency](./images/consistency.png)
 
 ### Operational Features
 - **Metrics & Monitoring**: Key count, WAL size, replication lag, ACK times
@@ -440,7 +441,7 @@ NODE_ID="node-1"     # for DHT nodes
 ## 🏛️ Architecture Deep Dive
 
 ### Consistent Hashing
-./images/consistent_hashing.png
+![Consistent Hashing](./images/consistent_hashing.png)
 
 - Uses **FNV-1a hash** for fast, uniform distribution
 - **150 virtual nodes** per physical node for balanced load
@@ -464,7 +465,7 @@ NODE_ID="node-1"     # for DHT nodes
 5. **Latency:** ~300-500ms (includes replication)
 
 ### Write-Ahead Logging (WAL)
-./images/wal.png
+![WAL](./images/wal.png)
 
 - Every write is logged to disk before applying to storage
 - Uses `encoding/gob` for efficient serialization

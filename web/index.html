@@ -2,12 +2,188 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/dht-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dht - Distributed KV Store</title>
+    <meta name="description" content="DHT - Distributed Hash Table Key-Value Store. Fast, scalable, and secure distributed data storage." />
+    <meta name="theme-color" content="#3b82f6" />
+    <meta property="og:title" content="DHT - Distributed KV Store" />
+    <meta property="og:description" content="Fast, scalable, and secure distributed data storage" />
+    <meta property="og:type" content="website" />
+    <title>DHT - Distributed Key-Value Store ✨</title>
+    <style>
+        #app-loader {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #app-loader.loaded {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .loader-text {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .loader-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(59, 130, 246, 0.2);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            border-radius: 9999px;
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        .loader-dots {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .loader-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #3b82f6;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .loader-dot:nth-child(2) {
+            animation-delay: 0.2s;
+            background: #8b5cf6;
+        }
+
+        .loader-dot:nth-child(3) {
+            animation-delay: 0.4s;
+            background: #06b6d4;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
+        }
+
+        .loader-subtitle {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-family: system-ui, -apple-system, sans-serif;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 <body>
+<div id="app-loader">
+    <svg class="loader-logo" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1">
+                    <animate attributeName="stop-color" values="#3b82f6;#8b5cf6;#06b6d4;#3b82f6" dur="3s" repeatCount="indefinite"/>
+                </stop>
+                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1">
+                    <animate attributeName="stop-color" values="#8b5cf6;#06b6d4;#3b82f6;#8b5cf6" dur="3s" repeatCount="indefinite"/>
+                </stop>
+            </linearGradient>
+            <linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1">
+                    <animate attributeName="stop-color" values="#06b6d4;#3b82f6;#8b5cf6;#06b6d4" dur="3s" repeatCount="indefinite"/>
+                </stop>
+                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1">
+                    <animate attributeName="stop-color" values="#3b82f6;#8b5cf6;#06b6d4;#3b82f6" dur="3s" repeatCount="indefinite"/>
+                </stop>
+            </linearGradient>
+        </defs>
+        <ellipse cx="60" cy="35" rx="35" ry="10" fill="url(#lg1)">
+            <animate attributeName="ry" values="10;12;10" dur="2s" repeatCount="indefinite"/>
+        </ellipse>
+        <rect x="25" y="35" width="70" height="30" fill="url(#lg2)" opacity="0.9"/>
+        <ellipse cx="60" cy="65" rx="35" ry="10" fill="url(#lg2)">
+            <animate attributeName="ry" values="10;12;10" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+        </ellipse>
+        <circle cx="60" cy="45" r="3" fill="#fff">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="50" cy="50" r="3" fill="#fff">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" begin="0.2s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="70" cy="50" r="3" fill="#fff">
+            <animate attributeName="opacity" values="1;0.3;1" dur="1s" begin="0.4s" repeatCount="indefinite"/>
+        </circle>
+        <text x="60" y="90" font-family="Arial" font-size="20" font-weight="bold" fill="url(#lg1)" text-anchor="middle">DHT</text>
+    </svg>
+    <div class="loader-text">Distributed Hash Table</div>
+    <div class="loader-bar"></div>
+    <div class="loader-dots">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+    </div>
+    <div class="loader-subtitle">Loading your distributed store...</div>
+</div>
 <div id="root"></div>
 <script type="module" src="/src/main.tsx"></script>
+<script>
+    // Hide loader when app is ready
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const loader = document.getElementById('app-loader');
+            if (loader) {
+                loader.classList.add('loaded');
+                setTimeout(() => loader.remove(), 500);
+            }
+        }, 1000);
+    });
+</script>
 </body>
 </html>

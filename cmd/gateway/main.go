@@ -42,6 +42,7 @@ func main() {
 	mux.HandleFunc("PUT /v1/kv/{key}", handler.PutKey)
 	mux.HandleFunc("GET /v1/kv/{key}", handler.GetKey)
 	mux.HandleFunc("DELETE /v1/kv/{key}", handler.DeleteKey)
+	mux.HandleFunc("GET /v1/kv", handler.ListKeys)
 
 	// Health check
 	mux.HandleFunc("GET /health", handler.Health)

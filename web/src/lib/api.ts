@@ -190,6 +190,15 @@ export const kvAPI = {
             },
         });
     },
+
+    list: async (apiKey: string): Promise<{ keys: any[]; count: number }> => {
+        const response = await gatewayApi.get('/v1/kv', {
+            headers: {
+                'X-API-Key': apiKey,
+            },
+        });
+        return response.data;
+    },
 };
 
 export { api, gatewayApi };

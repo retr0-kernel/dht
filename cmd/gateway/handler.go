@@ -294,6 +294,62 @@ func (h *Handler) DeleteKey(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// ListKeys handles GET /v1/kv (list all keys)
+func (h *Handler) ListKeys(w http.ResponseWriter, r *http.Request) {
+	// Get user ID from context
+	userID := r.Context().Value("user_id").(int64)
+
+	// Get all nodes
+	nodes := h.ring.GetAllNodes()
+
+	allKeys := make(map[string]interface{})
+
+	// Query each node for its keys
+	for _, nodeURL := range nodes {
+		reqURL := fmt.Sprintf("%s/store", nodeURL)
+		req, err := http.NewRequestWithContext(r.Context(), "GET", reqURL, nil)
+		if err != nil {
+			continue
+		}
+
+		req.Header.Set("X-User-ID", fmt.Sprintf("%d", userID))
+
+		resp, err := h.httpClient.Do(req)
+		if err != nil {
+			log.Printf("Error querying node %s: %v\n", nodeURL, err)
+			continue
+		}
+		defer resp.Body.Close()
+
+		var nodeData struct {
+			Keys  []map[string]interface{} `json:"keys"`
+			Count int                      `json:"count"`
+		}
+
+		if err := json.NewDecoder(resp.Body).Decode(&nodeData); err != nil {
+			continue
+		}
+
+		// Merge keys from this node
+		for _, keyInfo := range nodeData.Keys {
+			if key, ok := keyInfo["key"].(string); ok {
+				allKeys[key] = keyInfo
+			}
+		}
+	}
+
+	// Convert map to slice
+	keysList := make([]interface{}, 0, len(allKeys))
+	for _, keyInfo := range allKeys {
+		keysList = append(keysList, keyInfo)
+	}
+
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"keys":  keysList,
+		"count": len(keysList),
+	})
+}
+
 // Health check endpoint
 func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]interface{}{

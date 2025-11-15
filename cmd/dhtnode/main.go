@@ -66,6 +66,7 @@ func main() {
 	mux.HandleFunc("DELETE /store/{key}", node.handleDelete)
 	mux.HandleFunc("GET /metrics", node.handleMetrics)
 	mux.HandleFunc("GET /health", node.handleHealth)
+	mux.HandleFunc("GET /store", node.handleListKeys)
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
@@ -212,6 +213,26 @@ func (n *DHTNode) handleHealth(w http.ResponseWriter, r *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{
 		"status":  "healthy",
 		"node_id": n.nodeID,
+	})
+}
+
+func (n *DHTNode) handleListKeys(w http.ResponseWriter, r *http.Request) {
+	allEntries := n.storage.GetAll()
+
+	keys := make([]map[string]interface{}, 0)
+	for key, entry := range allEntries {
+		keys = append(keys, map[string]interface{}{
+			"key":        key,
+			"created_at": entry.CreatedAt,
+			"updated_at": entry.UpdatedAt,
+			"expires_at": entry.ExpiresAt,
+			"has_ttl":    entry.ExpiresAt != nil,
+		})
+	}
+
+	respondJSON(w, http.StatusOK, map[string]interface{}{
+		"keys":  keys,
+		"count": len(keys),
 	})
 }
 

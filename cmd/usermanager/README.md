@@ -12,7 +12,7 @@ The User Manager provides:
 - **API Key Validation**: Validate API keys for other services
 
 ## Architecture
-![User Manager Architecture](./images/usermanager-architecture.png)
+![User Manager Architecture](../../images/usermanager-architecture.png)
 
 ## Database Schema
 
@@ -178,7 +178,7 @@ Create a new API key (requires authentication).
 }
 ```
 
-**⚠️ Important:** The complete API key is only returned once during creation. Store it securely!
+**Important:** The complete API key is only returned once during creation. Store it securely!
 
 **Errors:**
 - `401`: Missing or invalid JWT token
@@ -304,7 +304,7 @@ ydht_<44-character-base64-string>
 4. Check expiration and active status
 
 ## Authentication Flow
-![Authentication Flow](./images/usermanager-auth-flow.png)
+![Authentication Flow](../../images/usermanager-auth-flow.png)
 
 ## Error Handling
 

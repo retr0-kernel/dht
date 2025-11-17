@@ -1,4 +1,4 @@
-# dht - Distributed Key-Value Store SaaS
+# dht - Distributed Key-Value Store
 
 A production-ready distributed hash table (DHT) based key-value storage service built with Go, featuring multi-tenancy, replication, and configurable consistency levels.
 

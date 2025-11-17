@@ -2,6 +2,8 @@
 
 A production-ready distributed hash table (DHT) based key-value storage service built with Go, featuring multi-tenancy, replication, and configurable consistency levels.
 
+[Medium](https://medium.com/@krizzsrivastava/building-a-distributed-key-value-store-in-a-weekend-dht-958bf00525da)
+
 ## Interface
 
 - **Landing Page**

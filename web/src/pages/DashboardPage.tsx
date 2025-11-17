@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -18,6 +18,13 @@ export function DashboardPage() {
         totalRequests: 0,
         activeKeys: 0,
     });
+    const [activeTab, setActiveTab] = useState('overview');
+
+    // Refs for icon animations
+    const overviewIconRef = useRef<HTMLDivElement>(null);
+    const keysIconRef = useRef<HTMLDivElement>(null);
+    const analyticsIconRef = useRef<HTMLDivElement>(null);
+    const browserIconRef = useRef<HTMLDivElement>(null);
 
     const loadStats = useCallback(async () => {
         try {
@@ -241,35 +248,75 @@ export function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1, delay: 0.4, ease: 'easeOut' }}
                 >
-                    <Tabs defaultValue="overview" className="space-y-6">
+                    <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                         <TabsList className="grid w-full grid-cols-4 h-auto p-1 bg-muted/50 backdrop-blur-sm">
                             <TabsTrigger
                                 value="overview"
-                                className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-200"
+                                className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-blue-500/20 data-[state=active]:to-blue-600/20 dark:data-[state=active]:from-blue-500/30 dark:data-[state=active]:to-blue-600/30 data-[state=active]:shadow-lg data-[state=active]:shadow-blue-500/20 data-[state=active]:border data-[state=active]:border-blue-500/50 transition-all duration-300"
                             >
-                                <BarChart3 className="h-4 w-4 mr-2" />
+                                <div ref={overviewIconRef} className="inline-block">
+                                    <BarChart3 className="h-4 w-4 mr-2" />
+                                </div>
                                 <span className="hidden sm:inline">Overview</span>
+                                {activeTab === 'overview' && (
+                                    <motion.div
+                                        layoutId="activeTab"
+                                        className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/10 dark:from-blue-500/20 dark:to-blue-600/20 rounded-md border border-blue-500/30"
+                                        initial={false}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                    />
+                                )}
                             </TabsTrigger>
                             <TabsTrigger
                                 value="keys"
-                                className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-200"
+                                className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-amber-500/20 data-[state=active]:to-amber-600/20 dark:data-[state=active]:from-amber-500/30 dark:data-[state=active]:to-amber-600/30 data-[state=active]:shadow-lg data-[state=active]:shadow-amber-500/20 data-[state=active]:border data-[state=active]:border-amber-500/50 transition-all duration-300"
                             >
-                                <Key className="h-4 w-4 mr-2" />
+                                <div ref={keysIconRef} className="inline-block">
+                                    <Key className="h-4 w-4 mr-2" />
+                                </div>
                                 <span className="hidden sm:inline">API Keys</span>
+                                {activeTab === 'keys' && (
+                                    <motion.div
+                                        layoutId="activeTab"
+                                        className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-amber-600/10 dark:from-amber-500/20 dark:to-amber-600/20 rounded-md border border-amber-500/30"
+                                        initial={false}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                    />
+                                )}
                             </TabsTrigger>
                             <TabsTrigger
                                 value="analytics"
-                                className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-200"
+                                className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-purple-500/20 data-[state=active]:to-purple-600/20 dark:data-[state=active]:from-purple-500/30 dark:data-[state=active]:to-purple-600/30 data-[state=active]:shadow-lg data-[state=active]:shadow-purple-500/20 data-[state=active]:border data-[state=active]:border-purple-500/50 transition-all duration-300"
                             >
-                                <Activity className="h-4 w-4 mr-2" />
+                                <div ref={analyticsIconRef} className="inline-block">
+                                    <Activity className="h-4 w-4 mr-2" />
+                                </div>
                                 <span className="hidden sm:inline">Analytics</span>
+                                {activeTab === 'analytics' && (
+                                    <motion.div
+                                        layoutId="activeTab"
+                                        className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/10 dark:from-purple-500/20 dark:to-purple-600/20 rounded-md border border-purple-500/30"
+                                        initial={false}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                    />
+                                )}
                             </TabsTrigger>
                             <TabsTrigger
                                 value="browser"
-                                className="data-[state=active]:bg-background data-[state=active]:shadow-md transition-all duration-200"
+                                className="relative data-[state=active]:bg-gradient-to-br data-[state=active]:from-green-500/20 data-[state=active]:to-green-600/20 dark:data-[state=active]:from-green-500/30 dark:data-[state=active]:to-green-600/30 data-[state=active]:shadow-lg data-[state=active]:shadow-green-500/20 data-[state=active]:border data-[state=active]:border-green-500/50 transition-all duration-300"
                             >
-                                <Database className="h-4 w-4 mr-2" />
+                                <div ref={browserIconRef} className="inline-block">
+                                    <Database className="h-4 w-4 mr-2" />
+                                </div>
                                 <span className="hidden sm:inline">Key Browser</span>
+                                {activeTab === 'browser' && (
+                                    <motion.div
+                                        layoutId="activeTab"
+                                        className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/10 dark:from-green-500/20 dark:to-green-600/20 rounded-md border border-green-500/30"
+                                        initial={false}
+                                        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                    />
+                                )}
                             </TabsTrigger>
                         </TabsList>
 

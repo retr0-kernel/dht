@@ -164,7 +164,7 @@ export const usageAPI = {
 
 // Gateway KV APIs (for key browser)
 export const kvAPI = {
-    get: async (key: string, apiKey: string): Promise<any> => {
+    get: async (key: string, apiKey: string): Promise<unknown> => {
         const response = await gatewayApi.get(`/v1/kv/${key}`, {
             headers: {
                 'X-API-Key': apiKey,
@@ -173,7 +173,7 @@ export const kvAPI = {
         return response.data;
     },
 
-    put: async (key: string, value: any, apiKey: string, ttl?: string): Promise<void> => {
+    put: async (key: string, value: unknown, apiKey: string, ttl?: string): Promise<void> => {
         const url = ttl ? `/v1/kv/${key}?ttl=${ttl}` : `/v1/kv/${key}`;
         await gatewayApi.put(url, value, {
             headers: {
@@ -191,7 +191,7 @@ export const kvAPI = {
         });
     },
 
-    list: async (apiKey: string): Promise<{ keys: any[]; count: number }> => {
+    list: async (apiKey: string): Promise<{ keys: Array<Record<string, unknown>>; count: number }> => {
         const response = await gatewayApi.get('/v1/kv', {
             headers: {
                 'X-API-Key': apiKey,

@@ -205,21 +205,69 @@ export function LoginPage() {
                             >
                                 <Button
                                     type="submit"
-                                    className="w-full relative overflow-hidden group"
+                                    className="w-full relative overflow-hidden group backdrop-blur-xl bg-gradient-to-r from-primary/90 via-primary to-primary/90 dark:from-primary/80 dark:via-primary/90 dark:to-primary/80 border-2 border-primary/30 dark:border-primary/50 shadow-[0_0_30px_rgba(59,130,246,0.3)] dark:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:shadow-[0_0_50px_rgba(59,130,246,0.5)] dark:hover:shadow-[0_0_50px_rgba(59,130,246,0.7)] transition-all duration-300"
                                     disabled={loading}
                                 >
-                                    <span className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary-foreground/10 to-primary/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                                    {loading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Signing in...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Sparkles className="mr-2 h-4 w-4" />
-                                            Sign in
-                                        </>
-                                    )}
+                                    {/* Glassmorphism overlay */}
+                                    <span className="absolute inset-0 bg-white/10 dark:bg-white/5" />
+
+                                    {/* Shimmer effect */}
+                                    <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 dark:via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+
+                                    {/* Animated border glow */}
+                                    <span className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-blue-400/20 blur-sm" />
+
+                                    {/* Button content with loading animation */}
+                                    <span className="relative flex items-center justify-center">
+                                        {loading ? (
+                                            <motion.span
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="flex items-center"
+                                            >
+                                                <motion.span
+                                                    animate={{ rotate: 360 }}
+                                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                                >
+                                                    <Loader2 className="mr-2 h-4 w-4" />
+                                                </motion.span>
+                                                <motion.span
+                                                    animate={{ opacity: [1, 0.5, 1] }}
+                                                    transition={{ duration: 1.5, repeat: Infinity }}
+                                                >
+                                                    Signing in
+                                                </motion.span>
+                                                <motion.span
+                                                    animate={{ opacity: [0, 1, 0] }}
+                                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
+                                                >
+                                                    .
+                                                </motion.span>
+                                                <motion.span
+                                                    animate={{ opacity: [0, 1, 0] }}
+                                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                                                >
+                                                    .
+                                                </motion.span>
+                                                <motion.span
+                                                    animate={{ opacity: [0, 1, 0] }}
+                                                    transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
+                                                >
+                                                    .
+                                                </motion.span>
+                                            </motion.span>
+                                        ) : (
+                                            <>
+                                                <motion.span
+                                                    whileHover={{ rotate: [0, -10, 10, -10, 0], scale: [1, 1.2, 1] }}
+                                                    transition={{ duration: 0.5 }}
+                                                >
+                                                    <Sparkles className="mr-2 h-4 w-4" />
+                                                </motion.span>
+                                                Sign in
+                                            </>
+                                        )}
+                                    </span>
                                 </Button>
                             </motion.div>
 
